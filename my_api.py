@@ -6,9 +6,7 @@ import trucksbook
 app=Flask(__name__)
 
 @app.route('/')
-def handle_request():
-    text=str(request.args.get('input')) #requires ?input=a
-    print(text)
+def home_view():
     d={'/logbook?input=(player_id)':'get player monthly data','/company-employee?input=(compamy_id)':'get company data like members,position,player_id'}
     json_dump= json.dumps(d)
     return json_dump
