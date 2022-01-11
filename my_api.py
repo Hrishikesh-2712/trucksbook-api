@@ -28,5 +28,3 @@ def company_employee():
     d=trucksbook.company_employees(text)
     json_dump= json.dumps(d)
     return json_dump
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
