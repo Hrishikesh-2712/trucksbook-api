@@ -5,7 +5,7 @@ import trucksbook
 
 app=Flask(__name__)
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/')
 def handle_request():
     text=str(request.args.get('input')) #requires ?input=a
     print(text)
