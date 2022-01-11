@@ -9,10 +9,9 @@ app=Flask(__name__)
 def handle_request():
     text=str(request.args.get('input')) #requires ?input=a
     print(text)
-    #d={'/logbook?input=(player_id)':'get player monthly data','/company-employee?input=(compamy_id)':'get company data like members,position,player_id'}
-    #json_dump= json.dumps(d)
-    #return json_dump
-    return "<h1>Welcome</h1>"
+    d={'/logbook?input=(player_id)':'get player monthly data','/company-employee?input=(compamy_id)':'get company data like members,position,player_id'}
+    json_dump= json.dumps(d)
+    return json_dump
 
 @app.route('/logbook', methods=['GET','POST'])
 def logbook():
@@ -31,6 +30,6 @@ def company_employee():
     return json_dump
 if __name__ == '__main__':
     try:
-        app.run()
+        app.run(debug=True)
     except Exception as e:
         print(e)
