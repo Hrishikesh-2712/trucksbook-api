@@ -2,7 +2,6 @@ from flask import Flask
 from flask import request
 import json
 import trucksbook
-from app.main import app
 
 app=Flask(__name__)
 
@@ -31,6 +30,6 @@ def company_employee():
     return json_dump
 if __name__ == '__main__':
     try:
-        app.run(debug=True, host='0.0.0.0')
+        app.run(debug=True)
     except Exception as e:
         print(e)
