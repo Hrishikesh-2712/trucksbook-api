@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 import json
 import trucksbook
+from app.main import app
 
 app=Flask(__name__)
 
