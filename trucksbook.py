@@ -12,9 +12,8 @@ with open('creds.json','r') as j:
 #excell express company_id=144260
 
 resp = requests.post(url, data=values)
-if resp.status_code==200:
+if resp.status_code==200 and 'success' in str(resp.content):
     print(resp.content)
-    print("Successfully logged-in")
     with requests.Session() as sess:
         res=sess.post(url, data=values)
     def logb(playerid):
@@ -59,7 +58,7 @@ if resp.status_code==200:
                      'Offences':'0',
                      'Cargo weight':'0'}
                     }
-            return logbook
+            return {soup.find_all('div',class_='nick-card')[0].text:logbook}
         elif len(span)==6:
             #game data
             g=game(span[0].text)
@@ -82,7 +81,7 @@ if resp.status_code==200:
                      'Fuel Cost':'0',
                      'Offences':'0',
                      'Cargo weight':'0'}}
-            return logbook
+            return {soup.find_all('div',class_='nick-card')[0].text:logbook}
             
         elif len(span)==12:
             logbook={game(span[0].text):{'Profit':dd(span[0].text),
@@ -97,20 +96,39 @@ if resp.status_code==200:
                      'Fuel Cost':dd(span[9].text),
                      'Offences':dd(span[10].text),
                      'Cargo weight':dd(span[11].text)}}
-            return logbook
+            return {soup.find_all('div',class_='nick-card')[0].text:logbook}
         else:
             pass
-    def company_employees(company_id):
+    def company(company_id):
         #returns name, position, trucksbook_player_id
+        data={}
         members={}
-        res=sess.get(f'https://trucksbook.eu/components/app/company/employee_list.php?id={company_id}')
+        res=sess.get(f'https://trucksbook.eu/company/{company_id}')
         soup=BeautifulSoup(res.text,'lxml')
-        players=soup.find_all('a', href=True, text=True)    
-        positions=soup.find_all('td',class_="d-none d-sm-table-cell text-center")
-        player_id=soup.findAll('a', attrs={'href': re.compile("^https://")})
-        for i in range(len(players)):
-            pl=''.join(players[i].text.split())
-            pos=positions[i].text
-            pid=player_id[i].get('href').split('/')[-1]
-            members[pl]={'position':pos,'player_id':pid}
-        return members
+        company_name=soup.find_all('h4')[0].text.strip()
+        founder=soup.find_all('div',class_='left')[0].text.strip()
+        founder_id=soup.findAll('a', attrs={'href': re.compile("^https://trucksbook.eu/profile/")})[1].get('href').split('/')[-1]
+        try:
+            if 'The company was dissolved!' in soup.find_all('div',class_='alert alert-danger')[0].text:
+                status='Closed'
+                birthday=soup.find_all('div',class_='profile-info-item')[1].text.strip()
+                members['']=''
+                i=0
+            else:
+                pass
+        except IndexError:
+            status='Active'
+            birthday=soup.find_all('div',class_='profile-info-item')[0].text.strip()
+            res=sess.get(f'https://trucksbook.eu/components/app/company/employee_list.php?id={company_id}')
+            soup=BeautifulSoup(res.text,'lxml')
+            players=soup.find_all('a', href=True, text=True)    
+            positions=soup.find_all('td',class_="d-none d-sm-table-cell text-center")
+            player_id=soup.findAll('a', attrs={'href': re.compile("^https://")})
+            for i in range(len(players)):
+                pl=''.join(players[i].text.split())
+                pos=positions[i].text
+                pid=player_id[i].get('href').split('/')[-1]
+                members[pl]={'position':pos,'player_id':pid}
+            i+=1
+        data={'status':status,'company':{'name':company_name,'founder':founder,'founder_id':founder_id,'born':birthday,'employee_count':i,'employees':members}}
+        return data
