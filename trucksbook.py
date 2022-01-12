@@ -128,6 +128,7 @@ if resp.status_code==200 and 'success' in str(resp.content):
             players=soup.find_all('a', href=True, text=True)    
             positions=soup.find_all('td',class_="d-none d-sm-table-cell text-center")
             player_id=soup.findAll('a', attrs={'href': re.compile("^https://")})
+            i=0
             for i in range(len(players)):
                 pl=''.join(players[i].text.split())
                 pos=positions[i].text
