@@ -101,6 +101,7 @@ if resp.status_code==200 and 'success' in str(resp.content):
             pass
     def company(company_id):
         #returns name, position, trucksbook_player_id
+        bd=''
         data={}
         members={}
         res=sess.get(f'https://trucksbook.eu/company/{company_id}')
@@ -108,17 +109,20 @@ if resp.status_code==200 and 'success' in str(resp.content):
         company_name=soup.find_all('h4')[0].text.strip()
         founder=soup.find_all('div',class_='left')[0].text.strip()
         founder_id=soup.findAll('a', attrs={'href': re.compile("^https://trucksbook.eu/profile/")})[1].get('href').split('/')[-1]
+        for s in soup.find_all('div',class_='profile-info-item'):
+            b=''.join(s.text.strip().split('.'))
+            if b.isdigit():
+                bd=b
+                break
         try:
             if 'The company was dissolved!' in soup.find_all('div',class_='alert alert-danger')[0].text:
                 status='Closed'
-                birthday=soup.find_all('div',class_='profile-info-item')[1].text.strip()
                 members['']=''
                 i=0
             else:
                 pass
         except IndexError:
             status='Active'
-            birthday=soup.find_all('div',class_='profile-info-item')[0].text.strip()
             res=sess.get(f'https://trucksbook.eu/components/app/company/employee_list.php?id={company_id}')
             soup=BeautifulSoup(res.text,'lxml')
             players=soup.find_all('a', href=True, text=True)    
@@ -130,5 +134,5 @@ if resp.status_code==200 and 'success' in str(resp.content):
                 pid=player_id[i].get('href').split('/')[-1]
                 members[pl]={'position':pos,'player_id':pid}
             i+=1
-        data={'status':status,'company':{'name':company_name,'founder':founder,'founder_id':founder_id,'born':birthday,'employee_count':i,'employees':members}}
+        data={'status':status,'company':{'name':company_name,'founder':founder,'founder_id':founder_id,'born':bd,'employee_count':i,'employees':members}}
         return data
