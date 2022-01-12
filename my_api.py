@@ -9,7 +9,7 @@ app=Flask(__name__)
 def handle_request():
     text=str(request.args.get('input')) #requires ?input=a
     print(text)
-    d={'sitemap':{'/logbook?id=(player_id)&year=(year)&month=(month)':'get player monthly data','/company?id=(company_id)':'get company data like members,position,player_id'},'author':'Ben X','emoji':':D'}
+    d={'sitemap':{'/logbook?id=(player_id)&year=(year)&month=(month)':'get player monthly data','/company?id=(company_id)':'get company data like founder,members,position,player_id'},'author':'Ben X','emoji':':D'}
     json_dump= json.dumps(d)
     return json_dump
 
