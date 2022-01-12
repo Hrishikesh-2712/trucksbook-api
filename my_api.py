@@ -19,7 +19,7 @@ def logbook():
     json_dump= json.dumps(d)
     return json_dump
 
-@app.route('/company, methods=['GET','POST'])
+@app.route('/company', methods=['GET','POST'])
 def company():
     text=str(request.args.get('input')) #requires ?input=a
     print(text)
