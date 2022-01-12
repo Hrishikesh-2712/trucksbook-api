@@ -7,7 +7,7 @@ app=Flask(__name__)
 
 @app.route('/')
 def home_view():
-    d={'/logbook?input=(player_id)':'get player monthly data','/company-employee?input=(compamy_id)':'get company data like members,position,player_id','author':'Ben X 🎄#8003'}
+    d={'/logbook?input=(player_id)':'get player monthly data','/company?input=(compamy_id)':'get company data like members,position,player_id','author':'Ben X 🎄#8003'}
     json_dump= json.dumps(d)
     return json_dump
 
