@@ -101,6 +101,7 @@ if resp.status_code==200 and 'success' in str(resp.content):
             pass
     def company(company_id):
         #returns name, position, trucksbook_player_id
+        i=-1
         bd=''
         data={}
         members={}
@@ -118,7 +119,7 @@ if resp.status_code==200 and 'success' in str(resp.content):
             if 'The company was dissolved!' in soup.find_all('div',class_='alert alert-danger')[0].text:
                 status='Closed'
                 members['']=''
-                i=0
+                i=-1
             else:
                 pass
         except IndexError:
@@ -128,12 +129,10 @@ if resp.status_code==200 and 'success' in str(resp.content):
             players=soup.find_all('a', href=True, text=True)    
             positions=soup.find_all('td',class_="d-none d-sm-table-cell text-center")
             player_id=soup.findAll('a', attrs={'href': re.compile("^https://")})
-            i=0
             for i in range(len(players)):
                 pl=''.join(players[i].text.split())
                 pos=positions[i].text
                 pid=player_id[i].get('href').split('/')[-1]
                 members[pl]={'position':pos,'player_id':pid}
-            i+=1
-        data={'status':status,'company':{'name':company_name,'founder':founder,'founder_id':founder_id,'born':bd,'employee_count':i,'employees':members}}
+        data={'status':status,'company':{'name':company_name,'founder':founder,'founder_id':founder_id,'born':bd,'employee_count':i+1,'employees':members}}
         return data
